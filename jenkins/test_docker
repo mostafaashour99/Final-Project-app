@@ -8,9 +8,11 @@ pipeline {
           containers:
           - name: docker
             image: docker:dind
-            tty: true
+            command:
+    		- cat
+    	    tty: true
             securityContext:
-            	privileged: true
+              privileged: true
 	    volumeMounts:
       		- name: varlibcontainers
           	  mountPath: /var/lib/containers

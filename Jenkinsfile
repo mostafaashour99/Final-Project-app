@@ -39,7 +39,7 @@ spec:
     stage('Build with Buildah') {
       steps {
         container('buildah') {
-          sh 'buildah build -t mostafaashour99/py-app:latest .'
+          sh 'buildah build -t mostafaashour99/py-app:${env.BUILD_ID} .'
         }
       }
     }
@@ -53,7 +53,7 @@ spec:
     stage('push image') {
       steps {
         container('buildah') {
-          sh 'buildah push mostafaashour99/py-app:latest'
+          sh 'buildah push mostafaashour99/py-app:${env.BUILD_ID}'
          
         }
       }
@@ -64,7 +64,7 @@ spec:
                 sh "cd ./k8s/app"
                 sh 'ls -ltr'
                 sh 'pwd'
-                sh "sed -i 's/pipeline:latest/pipeline:${env.BUILD_ID}/g' python-deploy.yaml"
+                sh "sed -i 's/pipeline:latest/py-app:${env.BUILD_ID}:${env.BUILD_ID}/g' python-deploy.yaml"
                 step([$class: 'KubernetesEngineBuilder', \
                   projectId: env.PROJECT_ID, \
                   clusterName: env.CLUSTER_NAME, \

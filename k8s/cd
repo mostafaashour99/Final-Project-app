@@ -7,7 +7,7 @@ pipeline {
         spec:
           containers:
           - name: sdk
-            image: ubuntu
+            image: bitnami/kubectl
             command:
             - cat
             tty: true
@@ -25,6 +25,7 @@ pipeline {
       steps {
         container('sdk') {     
                 echo "Deployment started ..."
+                sh 'gcloud container clusters get-credentials primary --zone us-central1-a --project mostafa-ashour-project '
                 sh "sed -i 's/pipeline:latest/py-app:${env.BUILD_ID}:${env.BUILD_ID}/g' k8s/app/python-deploy.yaml"
                 step([$class: 'KubernetesEngineBuilder', \
                   projectId: env.PROJECT_ID, \

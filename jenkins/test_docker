@@ -1,0 +1,36 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: docker
+            image: docker:dind
+            tty: true
+            securityContext:
+              privileged: true
+	    volumeMounts:
+      		- name: varlibcontainers
+          	  mountPath: /var/lib/containers
+  	  volumes:
+   	   - name: varlibcontainers
+        '''
+    }
+  }
+
+  stages {
+    stage('Build container') {
+      steps {
+        container('docker') {
+          sh "docker build . -t mostafaashour99/myapp:$BUILD_NUMBER"
+          withDockerRegistry([ credentialsId: "dockerhub_auth", url: "" ]) {
+                    sh "docker push mostafaashour99/myapp:$BUILD_NUMBER"
+                }
+        }
+      }
+    }
+ 
+        }
+      }

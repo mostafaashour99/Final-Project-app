@@ -2,57 +2,52 @@ pipeline {
   agent {
     kubernetes {
       yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: sdk
-            image: google/cloud-sdk
-            command:
-            - sleep
-            args:
-            - 99d
-            tty: true
-        '''
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sdk
+spec:
+  containers:
+  - name: sdk
+    image:  google/cloud-sdk
+    command:
+    - cat
+    tty: true
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - name: varlibcontainers
+        mountPath: /var/lib/containers
+  volumes:
+    - name: varlibcontainers
+'''   
     }
   }
-
-    stages {
-	  stage('Deploy Production') {
-            steps{
-            	withCredentials([file(credentialsId: 'service-account', variable: 'GC_KEY')]) {
-    				sh '''
-    					gcloud auth activate-service-account --key-file=${GC_KEY}
-    				  	apt-get install google-cloud-sdk-app-engine-java kubectl -y
-   				     	gcloud container clusters get-credentials primary --zone us-central1-a --project ${project}
-  				     	kubectl apply -f /k8s/app/python-deploy.yaml
-  				     	'''
-  				}
-
-            	
-               
-        } 
-	}
+  environment {
+    CLOUDSDK_CORE_PROJECT='annular-haven-365520'
+    CLIENT_EMAIL='annular-haven-365520-bastion@annular-haven-365520.iam.gserviceaccount.com'
+  }
+  stages {
+    stage('Deployment') {
+      steps {
+        container('sdk') {
+        withCredentials([file(credentialsId: 'service-account', variable: 'GCLOUD_CREDS')]) {
+          sh '''
+            gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
+            apt-get install google-cloud-sdk-app-engine-java kubectl -y
+            gcloud container clusters get-credentials primary --zone us-central1-a --project mostafa-ashour-project
+            kubectl apply -f k8s/app/python-deploy.yml
+          '''
+        }
+      }
+      }
+    }
+  }
+  post {
+    always {
+        container('sdk') {
+      sh 'gcloud auth revoke $CLIENT_EMAIL'
+        }
+    }
+  }
 }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

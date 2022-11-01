@@ -6,11 +6,18 @@ pipeline {
         kind: Pod
         spec:
           containers:
-          - name: sdk
-            image: bitnami/kubectl
+           - name: kubectl
+            image: bitnami/kubectl:latest
             command:
-            - cat
+            - sleep
+            args:
+            - 99d
             tty: true
+          - name: docker
+            image: docker:dind
+            tty: true
+            securityContext:
+              privileged: true
         '''
     }
   }
@@ -20,25 +27,28 @@ pipeline {
    	 LOCATION = 'us-central1-a'
    	 CREDENTIALS_ID ='mostafa-ashour-project'	
     }
-  stages {
-    stage('Deploy to K8s') {
-      steps {
-        container('sdk') {     
-                echo "Deployment started ..."
-                sh 'gcloud container clusters get-credentials primary --zone us-central1-a --project mostafa-ashour-project '
-                sh "sed -i 's/pipeline:latest/py-app:${env.BUILD_ID}:${env.BUILD_ID}/g' k8s/app/python-deploy.yaml"
-                step([$class: 'KubernetesEngineBuilder', \
-                  projectId: env.PROJECT_ID, \
-                  clusterName: env.CLUSTER_NAME, \
-                  location: env.LOCATION, \
-                  manifestPattern: 'k8s/app/python-deploy.yaml', \
-                  credentialsId: env.CREDENTIALS_ID, \
-                  verifyDeployments: true])
-
-        }
-      }
-    }
-  }
+    stages{
+	    stage('Build container') {
+	      steps {
+		container('docker') {
+		  sh 'docker version'
+		  sh "docker build . -t mostafaashour99/py-app:$BUILD_NUMBER" 
+		  withDockerRegistry([ credentialsId: "dockerhub_auth", url: "" ]) {
+                 	sh "docker push mostafaashour99/py-app:$BUILD_NUMBER"
+                }
+	      }
+	    }
+	   stage('Deploy new image') {
+	      steps {
+		container('kubectl') {
+		 	kubeconfig(credentialsId: 'mostafa-ashour-project', serverUrl: 'https://35.224.32.45') {
+				sh 'kubectl apply -f k8s/app/python-deploy.yaml'
+			}
+		  }
+		}
+	      }
+	  }
+	}
 }
 
 

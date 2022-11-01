@@ -7,7 +7,7 @@ pipeline {
         spec:
           containers:
           - name: sdk
-            image: ogle/cloud-sdk
+            image: google/cloud-sdk
             command:
             - sleep
             args:

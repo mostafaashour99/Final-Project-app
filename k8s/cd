@@ -1,47 +1,39 @@
 pipeline {
-  agent {
-    kubernetes {
-      yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: kubectl
-            image: bitnami/kubectl:latest
-            command:
-            - sleep
-            args:
-            - 99d
-            tty: true
-          - name: docker
-            image: docker:dind
-            tty: true
-            securityContext:
-              privileged: true
-        '''
-    }
-  }
+  agent any
+   
     stages {
-	    stage('Build container') {
-	      steps {
-		container('docker') {
-		  sh 'docker version'
-		  sh "docker build . -t mostafaashour99/py-app:$BUILD_NUMBER" 
-		  withDockerRegistry([ credentialsId: "dockerhub_auth", url: "" ]) {
-                 	sh "docker push mostafaashour99/py-app:$BUILD_NUMBER"
-                }
-	      }
-	    }
-	}
-	   stage('Deploy new image') {
-	      steps {
-		container('kubectl') {
-		 	sh 'kubctl --version'
-		  }
-		}
-	      }
+	    
+	  stage('Deploy Production') {
+            steps{
+                step([$class: 'KubernetesEngineBuilder', 
+                        projectId: "mostafa-ashour-project",
+                        clusterName: "primary",
+                        zone: "us-central1-a",
+                        manifestPattern: 'k8s/app/python-deploy.yaml',
+                        credentialsId: "mostafa-ashour-project",
+                        verifyDeployments: true])
+            }
+        } 
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

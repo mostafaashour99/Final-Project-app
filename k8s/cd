@@ -6,7 +6,6 @@ pipeline {
 	  stage('Deploy Production') {
             steps{
             	sh 'ls k8s/app/'
-            	sh 'apt install kubectl'
                 step([$class: 'KubernetesEngineBuilder', 
                         projectId: "mostafa-ashour-project",
                         clusterName: "primary",

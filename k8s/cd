@@ -6,7 +6,7 @@ pipeline {
         kind: Pod
         spec:
           containers:
-           - name: kubectl
+          - name: kubectl
             image: bitnami/kubectl:latest
             command:
             - sleep

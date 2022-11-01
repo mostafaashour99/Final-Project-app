@@ -1,15 +1,31 @@
 pipeline {
-    agent any
-    environment {
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: sdk
+            image: google/cloud-sdk
+            command:
+            - cat
+            tty: true
+        '''
+    }
+  }
+  environment {
         PROJECT_ID = 'mostafa-ashour-project'
     	CLUSTER_NAME = 'primary'
    	 LOCATION = 'us-central1-a'
    	 CREDENTIALS_ID ='mostafa-ashour-project'	
     }
-    
-    stages {
-        stage('Deploy to K8s') {
-            steps{
+  stages {
+    stage('Deploy to K8s') {
+      steps {
+        container('sdk') {
+          sh 'sudo apt install kubectl'
+          steps{
                 echo "Deployment started ..."
                 sh 'sudo apt install kubctl'
                 sh 'ls -ltr'
@@ -23,16 +39,11 @@ pipeline {
                   credentialsId: env.CREDENTIALS_ID, \
                   verifyDeployments: true])
                 }
-            }
+
         }
+      }
+    }
+  }
 }
 
-	
 
-
-
-
-    
-    
-    
-      

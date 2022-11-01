@@ -7,7 +7,7 @@ pipeline {
         spec:
           containers:
           - name: sdk
-            image: google/cloud-sdk
+            image: ubuntu
             command:
             - cat
             tty: true
@@ -25,11 +25,10 @@ pipeline {
       steps {
         container('sdk') {
           sh 'sudo apt install kubectl'
-          steps{
+         
                 echo "Deployment started ..."
                 sh 'sudo apt install kubctl'
-                sh 'ls -ltr'
-                sh 'pwd'
+
                 sh "sed -i 's/pipeline:latest/py-app:${env.BUILD_ID}:${env.BUILD_ID}/g' k8s/app/python-deploy.yaml"
                 step([$class: 'KubernetesEngineBuilder', \
                   projectId: env.PROJECT_ID, \
@@ -38,7 +37,6 @@ pipeline {
                   manifestPattern: 'k8s/app/python-deploy.yaml', \
                   credentialsId: env.CREDENTIALS_ID, \
                   verifyDeployments: true])
-                }
 
         }
       }

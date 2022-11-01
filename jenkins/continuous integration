@@ -1,0 +1,53 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sdk
+spec:
+  containers:
+  - name: sdk
+    image:  google/cloud-sdk
+    command:
+    - cat
+    tty: true
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - name: varlibcontainers
+        mountPath: /var/lib/containers
+  volumes:
+    - name: varlibcontainers
+'''   
+    }
+  }
+  environment {
+    CLOUDSDK_CORE_PROJECT='mostafa-ashour-project'
+    CLIENT_EMAIL='serviceaccountidforvms2@mostafa-ashour-project.iam.gserviceaccount.com'
+  }
+  stages {
+    stage('Deployment') {
+      steps {
+        container('sdk') {
+        withCredentials([file(credentialsId: 'service-account', variable: 'GCLOUD_CREDS')]) {
+          sh '''
+            gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
+            apt-get install google-cloud-sdk-app-engine-java kubectl -y
+            gcloud container clusters get-credentials primary --zone us-central1-a --project mostafa-ashour-project
+            kubectl apply -f ./k8s/app/python-deploy.yaml
+          '''
+        }
+      }
+      }
+    }
+  }
+  post {
+    always {
+        container('sdk') {
+      sh 'gcloud auth revoke $CLIENT_EMAIL'
+        }
+    }
+  }
+}

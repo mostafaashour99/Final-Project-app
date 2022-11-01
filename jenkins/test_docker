@@ -1,26 +1,29 @@
 pipeline {
   agent {
-    kubernetes {
+  kubernetes {
       yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: docker
-            image: docker:dind
-            command:
-    		- cat
-    	    tty: true
-            securityContext:
-              privileged: true
-	    volumeMounts:
-      		- name: varlibcontainers
-          	  mountPath: /var/lib/containers
-  	  volumes:
-   	   - name: varlibcontainers
-        '''
+apiVersion: v1
+kind: Pod
+metadata:
+  name: docker
+spec:
+  containers:
+  - name: docker
+    image:  docker:dind
+    command:
+    - cat
+    tty: true
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - name: varlibcontainers
+        mountPath: /var/lib/containers
+  volumes:
+    - name: varlibcontainers
+'''   
     }
   }
+  
 
   stages {
     stage('Build container') {

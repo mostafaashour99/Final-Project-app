@@ -20,8 +20,9 @@ pipeline {
     stages {
 	  stage('Deploy Production') {
             steps{
-            	sh 'apt install kubectl'
             	withCredentials([file(credentialsId: 'mostafa-ashour-project', variable: 'GC_KEY')]) {
+    				sh 'gcloud components install kubectl'
+    				sh '  gcloud components install gke-gcloud-auth-plugin'
     				sh("gcloud auth activate-service-account --key-file=${GC_KEY}")
    				sh("gcloud container clusters get-credentials primary --zone us-central1-a --project ${project}")
   				sh 'kubectl apply -f k8s/app/python-deploy.yaml'

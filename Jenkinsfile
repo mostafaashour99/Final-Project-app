@@ -74,7 +74,7 @@ spec:
                   verifyDeployments: true])
                 }
             }
-        }  
+         
   }
   post {
     always {

@@ -25,8 +25,6 @@ pipeline {
       steps {
         container('sdk') {     
                 echo "Deployment started ..."
-                sh 'sudo apt install kubctl'
-
                 sh "sed -i 's/pipeline:latest/py-app:${env.BUILD_ID}:${env.BUILD_ID}/g' k8s/app/python-deploy.yaml"
                 step([$class: 'KubernetesEngineBuilder', \
                   projectId: env.PROJECT_ID, \

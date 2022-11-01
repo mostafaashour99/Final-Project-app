@@ -24,8 +24,8 @@ spec:
     }
   }
   environment {
-    CLOUDSDK_CORE_PROJECT='annular-haven-365520'
-    CLIENT_EMAIL='annular-haven-365520-bastion@annular-haven-365520.iam.gserviceaccount.com'
+    CLOUDSDK_CORE_PROJECT='mostafa-ashour-project'
+    CLIENT_EMAIL='serviceaccountidforvms2@mostafa-ashour-project.iam.gserviceaccount.com'
   }
   stages {
     stage('Deployment') {

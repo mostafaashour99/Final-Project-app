@@ -31,9 +31,9 @@ spec:
   environment {
     DH_CREDS=credentials('dockerhub_auth')
     PROJECT_ID = 'mostafa-ashour-project'
-                CLUSTER_NAME = 'primary'
-                LOCATION = 'us-central1-a'
-                CREDENTIALS_ID = 'kubernetes'	
+    CLUSTER_NAME = 'primary'
+    LOCATION = 'us-central1-a'
+    CREDENTIALS_ID ='mostafa-ashour-project'	
   }
   stages {
     stage('Build with Buildah') {

@@ -36,7 +36,7 @@ spec:
             gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
             apt-get install google-cloud-sdk-app-engine-java kubectl -y
             gcloud container clusters get-credentials primary --zone us-central1-a --project mostafa-ashour-project
-            kubectl apply -f k8s/app/python-deploy.yml
+            kubectl apply -f ./k8s/app/python-deploy.yaml
           '''
         }
       }

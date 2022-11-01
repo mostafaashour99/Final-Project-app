@@ -11,7 +11,7 @@ pipeline {
         stage('Deploy to K8s') {
             steps{
                 echo "Deployment started ..."
-                sh "cd ./k8s/app"
+                sh "cd ../k8s/app"
                 sh 'ls -ltr'
                 sh 'pwd'
                 sh "sed -i 's/pipeline:latest/py-app:${env.BUILD_ID}:${env.BUILD_ID}/g' python-deploy.yaml"

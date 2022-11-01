@@ -5,6 +5,7 @@ pipeline {
 	    
 	  stage('Deploy Production') {
             steps{
+            	sh 'ls k8s/app/'
                 step([$class: 'KubernetesEngineBuilder', 
                         projectId: "mostafa-ashour-project",
                         clusterName: "primary",

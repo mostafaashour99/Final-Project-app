@@ -21,7 +21,8 @@ pipeline {
 	  stage('Deploy Production') {
             steps{
             	withCredentials([file(credentialsId: 'service-account', variable: 'GC_KEY')]) {
-    				sh ```	gcloud auth activate-service-account --key-file=${GC_KEY}
+    				sh ```
+    					gcloud auth activate-service-account --key-file=${GC_KEY}
     				  	apt-get install google-cloud-sdk-app-engine-java kubectl -y
    				     	gcloud container clusters get-credentials primary --zone us-central1-a --project ${project}
   				     	kubectl apply -f /k8s/app/python-deploy.yaml

@@ -12,7 +12,7 @@ spec:
     image: docker
     tty: true
     securityContext:
-    	privileged: true
+     privileged: true
 '''   
     }
   }

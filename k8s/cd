@@ -20,15 +20,13 @@ pipeline {
     stages {
 	  stage('Deploy Production') {
             steps{
-            	sh 'apt-get update'
-            	sh 'apt-get install kubectl'
+            	sh 'apt-get install google-cloud-sdk-app-engine-java kubectl -y‏'
             	withCredentials([file(credentialsId: 'gcloud-service-auth', variable: 'GC_KEY')]) {
     				sh("gcloud auth activate-service-account --key-file=${GC_KEY}")
    				sh("gcloud container clusters get-credentials primary --zone us-central1-a --project ${project}")
+  				sh 'kubectl apply -f /k8s/app/python-deploy.yaml'
   				}
-  		 withKubeConfig([credentialsId: 'mostafa-ashour-project', serverUrl: 'https://35.224.32.45']) {
-     				 sh 'kubectl apply -f /k8s/app/python-deploy.yaml'
-   			 }
+
             	
                
         } 

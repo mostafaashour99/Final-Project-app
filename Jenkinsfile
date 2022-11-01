@@ -35,7 +35,7 @@ spec:
     stage('Build with Buildah') {
       steps {
         container('buildah') {
-          sh 'buildah build -t alimohamed125/django-app:latest .'
+          sh 'buildah build -t mostafaashour99/py-app:latest .'
         }
       }
     }
@@ -49,7 +49,7 @@ spec:
     stage('push image') {
       steps {
         container('buildah') {
-          sh 'buildah push alimohamed125/django-app:latest'
+          sh 'buildah push mostafaashour99/py-app:latest'
          
         }
       }

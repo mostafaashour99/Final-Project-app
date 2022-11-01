@@ -9,12 +9,10 @@ metadata:
 spec:
   containers:
   - name: docker
-    image:  docker:dind
-    command:
-    - cat
+    image: docker
     tty: true
     securityContext:
-      privileged: true
+    	privileged: true
 '''   
     }
   }

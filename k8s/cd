@@ -6,8 +6,8 @@ pipeline {
         kind: Pod
         spec:
           containers:
-          - name: kubectl
-            image: bitnami/kubectl:latest
+          - name: sdk
+            image: ogle/cloud-sdk
             command:
             - sleep
             args:
@@ -16,18 +16,16 @@ pipeline {
         '''
     }
   }
+  environment {
+    DH_CREDS=credentials('dockerhub_auth')
+  }
     stages {
 	  stage('Deploy Production') {
             steps{
-            	sh 'ls k8s/app/'
-                step([$class: 'KubernetesEngineBuilder', 
-                        projectId: "mostafa-ashour-project",
-                        clusterName: "primary",
-                        zone: "us-central1-a",
-                        manifestPattern: 'k8s/app/python-deploy.yaml',
-                        credentialsId: "mostafa-ashour-project",
-                        verifyDeployments: true])
-            }
+            	sh 'apt install kubectl'
+            	sh 'gcloud auth activate-service-account mostafa-ashour-project credentials('service-account') --key-file= credentials('gcloud-service-auth')'
+            	sh 'kubectl apply -f k8s/app/python-deploy.yaml'
+               
         } 
 	}
 }

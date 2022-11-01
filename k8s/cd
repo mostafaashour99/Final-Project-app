@@ -16,9 +16,7 @@ pipeline {
         '''
     }
   }
-  environment {
-    DH_CREDS=credentials('dockerhub_auth')
-  }
+
     stages {
 	  stage('Deploy Production') {
             steps{
@@ -28,6 +26,7 @@ pipeline {
                
         } 
 	}
+}
 }
 
 

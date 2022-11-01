@@ -24,7 +24,7 @@ pipeline {
     stage('Deploy to K8s') {
       steps {
         container('sdk') {
-          sh 'sudo apt install kubectl'
+          sh 'apt install kubectl'
          
                 echo "Deployment started ..."
                 sh 'sudo apt install kubctl'

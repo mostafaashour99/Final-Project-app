@@ -21,8 +21,12 @@ pipeline {
 	  stage('Deploy Production') {
             steps{
             	sh 'apt install kubectl'
-            	sh 'gcloud auth activate-service-account mostafa-ashour-project credentials('service-account') --key-file=credentialId('mostafa-ashour-project')'
-            	sh 'kubectl apply -f k8s/app/python-deploy.yaml'
+            	withCredentials([file(credentialsId: 'mostafa-ashour-project', variable: 'GC_KEY')]) {
+    				sh("gcloud auth activate-service-account --key-file=${GC_KEY}")
+   				sh("gcloud container clusters get-credentials primary --zone us-central1-a --project ${project}")
+  				sh 'kubectl apply -f k8s/app/python-deploy.yaml'
+  				}
+            	
                
         } 
 	}

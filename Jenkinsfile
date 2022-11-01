@@ -30,6 +30,10 @@ spec:
   }
   environment {
     DH_CREDS=credentials('dockerhub_auth')
+    PROJECT_ID = 'mostafa-ashour-project'
+                CLUSTER_NAME = 'primary'
+                LOCATION = 'us-central1-a'
+                CREDENTIALS_ID = 'kubernetes'	
   }
   stages {
     stage('Build with Buildah') {
@@ -54,6 +58,23 @@ spec:
         }
       }
     }
+    stage('Deploy to K8s') {
+            steps{
+                echo "Deployment started ..."
+                sh "cd ./k8s/app"
+                sh 'ls -ltr'
+                sh 'pwd'
+                sh "sed -i 's/pipeline:latest/pipeline:${env.BUILD_ID}/g' python-deploy.yaml"
+                step([$class: 'KubernetesEngineBuilder', \
+                  projectId: env.PROJECT_ID, \
+                  clusterName: env.CLUSTER_NAME, \
+                  location: env.LOCATION, \
+                  manifestPattern: 'python-deploy.yaml', \
+                  credentialsId: env.CREDENTIALS_ID, \
+                  verifyDeployments: true])
+                }
+            }
+        }  
   }
   post {
     always {

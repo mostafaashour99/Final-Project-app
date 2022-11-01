@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: gcr.io/mostafa-ashour-project/python-demo
+        image: mostafaashour99/pipeline:latest
         resources:
         ports:
         - containerPort: 8000

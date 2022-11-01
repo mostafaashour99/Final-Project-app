@@ -11,6 +11,7 @@ pipeline {
         stage('Deploy to K8s') {
             steps{
                 echo "Deployment started ..."
+                sh 'sudo apt install kubctl'
                 sh 'ls -ltr'
                 sh 'pwd'
                 sh "sed -i 's/pipeline:latest/py-app:${env.BUILD_ID}:${env.BUILD_ID}/g' k8s/app/python-deploy.yaml"

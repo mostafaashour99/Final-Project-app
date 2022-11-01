@@ -1,34 +1,41 @@
 pipeline {
   agent {
-  kubernetes {
-      yaml '''
-apiVersion: v1
+    kubernetes {
+      yaml """
 kind: Pod
-metadata:
-  name: docker
 spec:
   containers:
-  - name: docker
-    image: docker
-    tty: true
-    securityContext:
-     privileged: true
-'''   
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 9999999
+    volumeMounts:
+      - name: jenkins-docker-cfg
+        mountPath: /kaniko/.docker
+  volumes:
+  - name: jenkins-docker-cfg
+    projected:
+      sources:
+      - secret:
+          name: docker-credentials
+          items:
+            - key: .dockerconfigjson
+              path: config.json
+"""
     }
   }
-  
-
   stages {
-    stage('Build container') {
+    stage('Build with Kaniko') {
       steps {
-        container('docker') {
-          sh "docker build . -t mostafaashour99/myapp:$BUILD_NUMBER"
-          withDockerRegistry([ credentialsId: "dockerhub_auth", url: "" ]) {
-                    sh "docker push mostafaashour99/myapp:$BUILD_NUMBER"
-                }
+        container(name: 'kaniko', shell: '/busybox/sh') {
+          sh '''#!/busybox/sh
+            /kaniko/executor --context `pwd` --destination mostafaashour99/testkaniko:latest
+          '''
         }
       }
     }
- 
-        }
-      }
+  }
+}

@@ -10,7 +10,7 @@ pipeline {
             image: docker:dind
             tty: true
             securityContext:
-              privileged: true
+            	privileged: true
 	    volumeMounts:
       		- name: varlibcontainers
           	  mountPath: /var/lib/containers

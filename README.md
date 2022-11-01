@@ -2,10 +2,10 @@
 
 Deploy a python web application on GKE by CI/CD Pipeline. if you need to know more about app you can go and read this readme file https://github.com/atefhares/DevOps-Challenge-Demo-Code in short its python app depend on redis
 #
-###First Part: [ Infrastructure Repository ](https://github.com/mostafaashour99/Final-project-Infra)
+### First Part: [ Infrastructure Repository ](https://github.com/mostafaashour99/Final-project-Infra)
 - apply infrastructure with [Terraform ](https://github.com/mostafaashour99/Final-project-Infra/tree/main/terraform) in GCp 
 - Instaling jenkins in cluster with  [helm](https://github.com/mostafaashour99/Final-project-Infra/tree/main/jenkins)  
-###second part:
+### second part:
 - dockerize python application
 - configure Credentials in Jenkins
 - create CI pipeline with Jenkins

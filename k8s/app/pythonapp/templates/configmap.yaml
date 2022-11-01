@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.deploy.configMapRef.name}}
+data:
+{{- with .Values.configMap.data }}
+    ENVIRONMENT: {{ .ENVIRONMENT }}
+    HOST: {{ .HOST | quote }}
+    PORT: {{ .PORT }}
+    REDIS_HOST: {{ .REDIS_HOST }}
+    REDIS_PORT: {{ .REDIS_PORT }}
+    REDIS_DB: {{ .REDIS_DB }}
+{{- end }}

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-deployment
+spec:
+  selector:
+    matchLabels:
+      name: python-pod
+      app: python-demo-app
+  template:
+    metadata:
+      labels:
+        name: python-pod
+        app: python-demo-app
+    spec:
+      containers:
+      - name: myapp
+        image: gcr.io/mostafa-ashour-project/python-demo
+        resources:
+        ports:
+        - containerPort: 8000
+        env:
+          - name: HOST
+            value: localhost 
+          - name: REDIS_HOST
+            value: redis.default.svc.cluster.local‏
+     

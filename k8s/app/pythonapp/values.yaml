@@ -1,0 +1,41 @@
+deploy:
+  metadata:
+    name: python-deployment
+
+  selector:
+    matchLabels:
+      name: python-pod
+      app: python-demo-app
+
+  template:
+    metadata:
+      labels:
+        name: python-pod
+        app: python-demo-app
+
+  containers:
+    name: myapp
+    image: gcr.io/mostafa-ashour-project/python-demo
+    ports:
+      containerPort: 8000
+
+  configMapRef:
+      name: python-env-vars
+
+configMap:
+  data:
+      ENVIRONMENT: DEV
+      HOST: localhost
+      PORT: "8000"
+      REDIS_HOST: localhost
+      REDIS_PORT: "6379"
+      REDIS_DB: "0"
+
+
+Service:
+    name: python-service
+    type: LoadBalancer 
+    ports:
+      port: 8000
+      targetPort: 8000
+      protocol: TCP

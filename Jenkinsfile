@@ -61,5 +61,11 @@ spec:
         sh 'buildah logout docker.io'
       }
     }
+    success {
+        		slackSend color: "#439FE0" , message:"Build deployed successfully - ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        	}
+        	failure {
+     		   slackSend failOnError:true , message:"Build failed  - ${env.JOB_NAME} ${env.BUILD_NUMBER} "
+    		}
   }
 }

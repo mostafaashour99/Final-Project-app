@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python
 WORKDIR /app/python
 COPY ./DevOps-Challenge-Demo-Code /app/python
 
@@ -10,4 +10,4 @@ ENV REDIS_DB=0
 EXPOSE 8000
 RUN pip install -r requirements.txt
 
-ENTRYPOINT [ "python","hello.py"]	
+ENTRYPOINT [ "python","hello.py"]		

@@ -21,7 +21,7 @@ Deploy a python web application on GKE by CI/CD Pipeline. if you need to know mo
 
 # create Continuous Integration CI pipline :
   -  pull code from github 
-  -  build py-app image you can use (docker - buildah - kaniko) to build your image
+  -  build py-app image you can use (docker - buildah - kaniko - or anything else) to build your image
   -  push this image to dockerhub
   -  trigger CD pipline to run
   

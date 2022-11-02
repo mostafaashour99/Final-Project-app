@@ -1,0 +1,41 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sarva-test
+spec:
+  containers:
+   - name: dockercontainer
+     image: docker:20
+     command: ["sleep", "43200"]
+     volumeMounts:
+       - name: docker
+         mountPath: /var/run/docker.sock
+  volumes:
+    - name: docker
+      hostPath:
+        path: /var/run/docker.sock
+"""
+    }
+  }
+ stages {
+    stage('Build docker image') {
+      steps {
+        container('dockercontainer') {
+          withCredentials([usernamePassword(credentialsId: 'dockerhub_auth', passwordVariable: 'pass', usernameVariable: 'user')]) {
+          sh '''
+          docker build . -t mostafaashour99/py-app:$BUILD_NUMBER"  
+          docker login -u ${user} -p ${pass}
+          docker push mostafaashour99/myapp:$BUILD_NUMBER
+          '''
+          }
+        }
+      }
+    }
+    }
+    }
+
+

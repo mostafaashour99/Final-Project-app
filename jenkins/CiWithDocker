@@ -25,13 +25,18 @@ spec:
     stage('Build docker image') {
       steps {
         container('dockercontainer') {
-          sh 'docker build . -t mostafaashour99/py-app:$BUILD_NUMBER'  
-           withDockerRegistry([ credentialsId: "dockerhub_auth", url: "" ]) {
-                    sh "docker push mostafaashour99/myapp:$BUILD_NUMBER"
-                }
+          
+                
+         withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]) {
+          sh '''
+         	 docker login -u ${user} -p ${pass}
+        	 docker build . -t mostafaashour99/py-app:$BUILD_NUMBER
+          	 docker push mostafaashour99/myapp:$BUILD_NUMBER
+         '''
           }
         }
       }
+    }
     }
     }
 

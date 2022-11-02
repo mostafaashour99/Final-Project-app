@@ -32,7 +32,7 @@ spec:
       steps {
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
-            /kaniko/executor --context `pwd` --destination mostafaashour99/testkaniko:latest
+            /kaniko/executor --context `pwd` --destination mostafaashour99/py-app:latest
           '''
         }
       }

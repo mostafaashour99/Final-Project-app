@@ -23,5 +23,5 @@ spec:
           - name: HOST
             value: localhost 
           - name: REDIS_HOST
-            value: redis.default.svc.cluster.local‏
+            value: redis‏
      
